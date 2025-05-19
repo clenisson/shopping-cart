@@ -4,13 +4,26 @@ type Client {
   email: String!
 }
 
+type Products {
+  id: ID!
+  name: String!
+  price: Float!
+}
+
 type Query {
   clients: [Client!]!
   client(id: ID!): Client
+
+  products: [Products!]!
+  product(id: ID!): Products
 }
 
 type Mutation {
   createClient(name: String!, email: String!): Client
   updateClient(id: ID!, name: String, email: String): Client
   deleteClient(id: ID!): Boolean
+
+  createProduct(name: String!, price: Float!): Products
+  updateProduct(id: ID!, name: String, price: Float): Products
+  deleteProduct(id: ID!): Boolean
 }

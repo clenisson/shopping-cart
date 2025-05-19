@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use GraphQL\GraphQL;
 use GraphQL\Utils\BuildSchema;
 use App\Models\Client;
+use App\Models\Product;
 use GraphQL\Error\DebugFlag;
 
 class GraphQLController extends Controller
@@ -44,6 +45,33 @@ class GraphQLController extends Controller
         },
         'deleteClient' => function ($root, array $args, $ctx, $info) {
             return (bool) Client::destroy($args['id']);
+        },
+
+        'products' => function ($root, array $args, $ctx, $info) {
+            return Product::all();
+        },
+
+        'product' => function ($root, array $args, $ctx, $info) {
+            return Product::find($args['id']);
+        },
+
+        'createProduct' => function ($root, array $args, $ctx, $info) {
+            return Product::create([
+                'name'  => $args['name'],
+                'price' => $args['price'],
+            ]);
+        },
+        'updateProduct' => function ($root, array $args, $ctx, $info) {
+            $product = Product::findOrFail($args['id']);
+            $product->fill(array_filter([
+                'name'  => $args['name']  ?? null,
+                'price' => $args['price'] ?? null,
+            ], fn($v) => ! is_null($v)));
+            $product->save();
+            return $product;
+        },
+        'deleteProduct' => function ($root, array $args, $ctx, $info) {
+            return (bool) Product::destroy($args['id']);
         },
     ];
 
