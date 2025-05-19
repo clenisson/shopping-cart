@@ -7,6 +7,7 @@ use GraphQL\GraphQL;
 use GraphQL\Utils\BuildSchema;
 use App\Models\Client;
 use App\Models\Product;
+use App\Models\Purchase;
 use GraphQL\Error\DebugFlag;
 
 class GraphQLController extends Controller
@@ -72,6 +73,30 @@ class GraphQLController extends Controller
         },
         'deleteProduct' => function ($root, array $args, $ctx, $info) {
             return (bool) Product::destroy($args['id']);
+        },
+
+        'purchases' => function ($root, array $args, $ctx, $info) {
+            return Purchase::all();
+        },
+        'purchase' => function ($root, array $args, $ctx, $info) {
+            return Purchase::find($args['id']);
+        },
+        'createPurchase' => function ($root, array $args, $ctx, $info) {
+            $product = Product::findOrFail($args['product_id']);
+            $client = Client::findOrFail($args['client_id']);
+            $total_price = $product->price * $args['quantity'];
+            if ($args['quantity'] > 1) {
+                $total_price = $product->price * $args['quantity'];
+            } else {
+                $total_price = $product->price;
+            }
+
+            return Purchase::create([
+                'client_id'   => $args['client_id'],
+                'product_id'  => $args['product_id'],
+                'quantity'    => $args['quantity'],
+                'total'       => $total_price,
+            ]);
         },
     ];
 

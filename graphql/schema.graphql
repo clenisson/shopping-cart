@@ -4,18 +4,30 @@ type Client {
   email: String!
 }
 
-type Products {
+type Product {
   id: ID!
   name: String!
   price: Float!
+}
+
+
+type Purchase {
+  id: ID!
+  client: Client!
+  product: Product!
+  quantity: Int!
+  total: Float!
 }
 
 type Query {
   clients: [Client!]!
   client(id: ID!): Client
 
-  products: [Products!]!
-  product(id: ID!): Products
+  products: [Product!]!
+  product(id: ID!): Product
+
+  purchases: [Purchase!]!
+  purchase(id: ID!): Purchase  
 }
 
 type Mutation {
@@ -23,7 +35,9 @@ type Mutation {
   updateClient(id: ID!, name: String, email: String): Client
   deleteClient(id: ID!): Boolean
 
-  createProduct(name: String!, price: Float!): Products
-  updateProduct(id: ID!, name: String, price: Float): Products
+  createProduct(name: String!, price: Float!): Product
+  updateProduct(id: ID!, name: String, price: Float): Product
   deleteProduct(id: ID!): Boolean
+
+  createPurchase(client_id: ID!, product_id: ID!, quantity: Int!): Purchase 
 }
